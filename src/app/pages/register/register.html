@@ -9,10 +9,20 @@
                         <mat-form-field appearance="fill" class="full-width">
                               <mat-label>Nome Completo</mat-label>
                               <input matInput formControlName="fullName" placeholder="Digite o seu nome completo">
+
+                              @if(fullNameErrors) {
+                              <mat-error>{{ fullNameErrors }}</mat-error>
+                              }
+
                         </mat-form-field>
                         <mat-form-field appearance="fill" class="full-width">
                               <mat-label>Email</mat-label>
                               <input matInput formControlName="email" placeholder="Digite o seu nome email">
+
+                              @if(emailErrors) {
+                              <mat-error>{{ emailErrors }}</mat-error>
+                              }
+
                         </mat-form-field>
                   </form>
                   <input-password-field [control]="passwordControl"></input-password-field>
