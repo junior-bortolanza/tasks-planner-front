@@ -6,6 +6,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PasswordField } from '../../shared/components/password-field/password-field';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
+import { User } from '../../services/user';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 
 @Component({
@@ -17,7 +21,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } 
     MatInputModule,
     MatSelectModule,
     PasswordField, ReactiveFormsModule,
-
+    MatProgressSpinnerModule
   ],
   templateUrl: './register.html',
   styleUrl: './register.scss',
@@ -25,10 +29,16 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } 
 })
 export class Register {
   form: FormGroup;
+  isLoading = false;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private User: User,
+    private router: Router
+
+  ) {
     this.form = this.formBuilder.group({
-      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
@@ -39,7 +49,7 @@ export class Register {
   }
 
   get fullNameErrors(): string | null {
-    const fullNameControl = this.form.get('fullName')
+    const fullNameControl = this.form.get('name')
     if (fullNameControl?.hasError('required')) return 'O nome completo é um campo obrigatório';
     if (fullNameControl?.hasError('minlength')) return 'Cadastre um nome com mais de 3 letras';
     return null
@@ -58,7 +68,19 @@ export class Register {
       return
     }
 
-    console.log("formulário submetido", this.form.value)
-  }
+    const formData = this.form.value;
 
+    this.isLoading = true;
+
+    this.User.register(formData)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: (response) => {
+          this.router.navigate(['/login'])
+        },
+        error: (error) => {
+          console.error(`Error ao registrar usuario`, error)
+        }
+      })
+  }
 }

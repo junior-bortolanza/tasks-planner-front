@@ -8,7 +8,7 @@
                   <form [formGroup]="form">
                         <mat-form-field appearance="fill" class="full-width">
                               <mat-label>Nome Completo</mat-label>
-                              <input matInput formControlName="fullName" placeholder="Digite o seu nome completo">
+                              <input matInput formControlName="name" placeholder="Digite o seu nome completo">
 
                               @if(fullNameErrors) {
                               <mat-error>{{ fullNameErrors }}</mat-error>
@@ -28,8 +28,12 @@
                   <input-password-field [control]="passwordControl"></input-password-field>
             </mat-card-content>
             <mat-card-actions>
-                  <button matButton="elevated" class="full-width" [disabled]="form.invalid"
-                        (click)="submit()">Cadastrar</button>
+                  <button matButton="elevated" class="full-width" [disabled]="form.invalid" (click)="submit()">
+                        <span class="cad-button-content">
+                              {{ isLoading ? "Cadastrando..." : "Cadastrar"}}
+                              @if (isLoading) {<mat-spinner diameter="20"></mat-spinner>}
+                        </span>
+                  </button>
             </mat-card-actions>
       </mat-card>
 </div>
