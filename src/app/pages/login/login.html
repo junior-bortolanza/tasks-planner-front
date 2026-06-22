@@ -1,20 +1,11 @@
-<div class="register-component">
+<div class="login-component">
       <mat-card>
 
             <mat-card-header class="padding-m">
-                  <mat-card-title>Cadastro de Usuário</mat-card-title>
+                  <mat-card-title>Login de Usuário</mat-card-title>
             </mat-card-header>
             <mat-card-content>
                   <form [formGroup]="form">
-                        <mat-form-field appearance="fill" class="full-width">
-                              <mat-label>Nome Completo</mat-label>
-                              <input matInput formControlName="name" placeholder="Digite o seu nome completo">
-
-                              @if(fullNameErrors) {
-                              <mat-error>{{ fullNameErrors }}</mat-error>
-                              }
-
-                        </mat-form-field>
                         <mat-form-field appearance="fill" class="full-width">
                               <mat-label>Email</mat-label>
                               <input matInput formControlName="email" placeholder="Digite o seu nome email">
@@ -22,16 +13,14 @@
                               @if(emailErrors) {
                               <mat-error>{{ emailErrors }}</mat-error>
                               }
-
                         </mat-form-field>
                   </form>
-                  <input-password-field [placeholder]="'Cadastre a sua senha!'"
-                        [control]="passwordControl"></input-password-field>
+                  <input-password-field [control]="passwordControl"></input-password-field>
             </mat-card-content>
             <mat-card-actions>
                   <button matButton="elevated" class="full-width" [disabled]="form.invalid" (click)="submit()">
                         <span class="cad-button-content">
-                              {{ isLoading ? "Cadastrando..." : "Cadastrar"}}
+                              {{ isLoading ? "Entrando..." : "Entrar"}}
                               @if (isLoading) {<mat-spinner diameter="20"></mat-spinner>}
                         </span>
                   </button>
