@@ -25,7 +25,8 @@
 
                         </mat-form-field>
                   </form>
-                  <input-password-field [control]="passwordControl"></input-password-field>
+                  <input-password-field [placeholder]="'Cadastre a sua senha!'"
+                        [control]="passwordControl"></input-password-field>
             </mat-card-content>
             <mat-card-actions>
                   <button matButton="elevated" class="full-width" [disabled]="form.invalid" (click)="submit()">

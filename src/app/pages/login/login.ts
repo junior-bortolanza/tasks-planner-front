@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { User, UserLoginPayload } from '../../services/user';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { Auth } from '../../services/auth';
 
 
 @Component({
@@ -33,7 +34,8 @@ export class Login {
   constructor(
     private formBuilder: FormBuilder,
     private User: User,
-    private router: Router
+    private router: Router,
+    private authService: Auth
 
   ) {
     this.form = this.formBuilder.group({
@@ -67,10 +69,11 @@ export class Login {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (response) => {
+          this.authService.saveToken(response)
           this.router.navigate(['/'])
         },
         error: (error) => {
-          console.error(`Error ao entrar usuario`, error)
+          console.error(`Error ao entrar`, error)
         }
       })
   }
