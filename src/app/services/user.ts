@@ -68,6 +68,6 @@ export class User {
   }
 
   login(body: UserLoginPayload): Observable<string> {
-    return this.http.post<string>(`${this.apiUrl}/usuario/login`, body)
+    return this.http.post<string>(`${this.apiUrl}/usuario/login`, body, { responseType: 'text' as 'json' })
   }
 }
