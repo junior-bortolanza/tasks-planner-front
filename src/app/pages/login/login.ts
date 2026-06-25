@@ -33,7 +33,7 @@ export class Login {
 
   constructor(
     private formBuilder: FormBuilder,
-    private User: User,
+    private userService: User,
     private router: Router,
     private authService: Auth
 
@@ -42,6 +42,12 @@ export class Login {
       email: this.formBuilder.control('', { validators: [Validators.required, Validators.email], nonNullable: true }),
       password: this.formBuilder.control('', { validators: [Validators.required, Validators.minLength(6)], nonNullable: true })
     });
+  }
+
+  ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/tasks'])
+    }
   }
 
   get passwordControl(): FormControl {
@@ -65,12 +71,19 @@ export class Login {
     this.isLoading = true;
 
 
-    this.User.login(formData)
+    this.userService.login(formData)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (response) => {
           this.authService.saveToken(response)
-          this.router.navigate(['/'])
+          this.userService.getUserByEmail(response).subscribe(
+            {
+              next: (user) => {
+                this.authService.saveUser(user)
+              }
+            }
+          )
+          this.router.navigate(['/tasks'])
         },
         error: (error) => {
           console.error(`Error ao entrar`, error)

@@ -1,6 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, signal } from '@angular/core';
+import { Observable, tap } from 'rxjs';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { Auth } from './auth';
 
 interface UserRegisterPayload {
   name: string,
@@ -31,7 +33,7 @@ export interface UserLoginPayload {
 
 }
 
-interface UserRegisterResponse {
+export interface UserResponse {
   name: string,
   email: string,
   address: [
@@ -61,13 +63,44 @@ export class User {
 
   private apiUrl = 'http://localhost:8083';
 
-  constructor(private http: HttpClient) { }
+  private jwtHelper = new JwtHelperService;
 
-  register(body: UserRegisterPayload): Observable<UserRegisterResponse> {
-    return this.http.post<UserRegisterResponse>(`${this.apiUrl}/usuario`, body)
+  user = signal<UserResponse | null>(null)
+
+  constructor(private http: HttpClient, private authService: Auth) {
+    const usuarioSalvo = this.authService.getUser();
+    if (usuarioSalvo) {
+      this.user.set(usuarioSalvo)
+    }
+  }
+
+  register(body: UserRegisterPayload): Observable<UserResponse> {
+    return this.http.post<UserResponse>(`${this.apiUrl}/usuario`, body)
   }
 
   login(body: UserLoginPayload): Observable<string> {
     return this.http.post<string>(`${this.apiUrl}/usuario/login`, body, { responseType: 'text' as 'json' })
+  }
+
+  getUserByEmail(token: string): Observable<UserResponse> {
+    const email = this.getEmailFromToken(token)
+    if (!email) throw new Error('Token Invalid!')
+    const headers = new HttpHeaders({ Authorization: `${token}` })
+    return this.http.get<UserResponse>(`${this.apiUrl}/usuario?email=${email}`, { headers }).pipe(
+      tap(user => this.user.set(user))
+    )
+  }
+
+  getEmailFromToken(token: string): string | null {
+    try {
+      const decoded = this.jwtHelper.decodeToken(token);
+      return decoded?.sub || null
+    } catch (error) {
+      return null;
+    }
+  }
+
+  getUser(): UserResponse | null {
+    return this.user();
   }
 }
