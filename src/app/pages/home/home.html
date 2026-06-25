@@ -1,14 +1,17 @@
 <div class="home-hero">
-      <div class="hero-text">
+
+      <section class="hero-content">
             <h1>Organize suas tarefas de forma simples e poderosa</h1>
             <p>Tenha mais produtividade e clareza no seu dia a dia com nosso agendador de tarefas inteligente</p>
 
             <div class="hero-actions">
-                  <button mat-raised-button routerLink="/register">Comece Agora</button>
-                  <button mat-raised-button routerLink="/login">Ja tenho conta</button>
+                  <button mat-flat-button routerLink="/register">Comece Agora</button>
+                  <button mat-flat-button routerLink="/login">Já tenho conta</button>
             </div>
-            <div class="hero-image">
-                  <img [src]="imgHero">
-            </div>
-      </div>
+      </section>
+
+      <section class="hero-image">
+            <img [src]="imgHero" alt="Imagem agenda de tarefas">
+      </section>
+
 </div>
